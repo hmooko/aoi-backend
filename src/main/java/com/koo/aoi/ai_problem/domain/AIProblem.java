@@ -1,5 +1,6 @@
-package com.koo.aoi.domain;
+package com.koo.aoi.ai_problem.domain;
 
+import com.koo.aoi.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

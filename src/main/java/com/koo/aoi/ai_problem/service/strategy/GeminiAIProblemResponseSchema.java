@@ -1,6 +1,6 @@
-package com.koo.aoi.service.createaiproblems.strategy;
+package com.koo.aoi.ai_problem.service.strategy;
 
-import com.koo.aoi.dto.gemini.GeminiRequest;
+import com.koo.aoi.gemini.dto.GeminiRequest;
 
 import java.util.List;
 import java.util.Map;

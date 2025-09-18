@@ -1,9 +1,9 @@
-package com.koo.aoi.service;
+package com.koo.aoi.user.service;
 
-import com.koo.aoi.domain.User;
+import com.koo.aoi.user.domain.User;
 import com.koo.aoi.dto.user.UserResponseDto;
 import com.koo.aoi.dto.user.UserSignUpRequestDto;
-import com.koo.aoi.repository.UserRepository;
+import com.koo.aoi.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package com.koo.aoi.dto.gemini;
+package com.koo.aoi.gemini.dto;
 
 import java.util.List;
 

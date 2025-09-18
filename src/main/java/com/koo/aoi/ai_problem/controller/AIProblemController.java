@@ -1,8 +1,8 @@
-package com.koo.aoi.controller;
+package com.koo.aoi.ai_problem.controller;
 
-import com.koo.aoi.dto.problem.AIProblemCreateRequestDto;
-import com.koo.aoi.dto.problem.AIProblemResponseDto;
-import com.koo.aoi.service.createaiproblems.AIProblemService;
+import com.koo.aoi.ai_problem.dto.AIProblemCreateRequestDto;
+import com.koo.aoi.ai_problem.dto.AIProblemResponseDto;
+import com.koo.aoi.ai_problem.service.AIProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

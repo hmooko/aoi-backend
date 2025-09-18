@@ -1,8 +1,8 @@
-package com.koo.aoi.service.createaiproblems.strategy;
+package com.koo.aoi.ai_problem.service.strategy;
 
-import com.koo.aoi.domain.AIProblem.ProblemType;
-import com.koo.aoi.dto.gemini.GeminiRequest;
-import com.koo.aoi.dto.problem.AIProblemCreateRequestDto;
+import com.koo.aoi.ai_problem.domain.AIProblem.ProblemType;
+import com.koo.aoi.gemini.dto.GeminiRequest;
+import com.koo.aoi.ai_problem.dto.AIProblemCreateRequestDto;
 
 public interface ProblemCreationStrategy {
 

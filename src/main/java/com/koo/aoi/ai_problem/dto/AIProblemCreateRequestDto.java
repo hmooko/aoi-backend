@@ -1,6 +1,6 @@
-package com.koo.aoi.dto.problem;
+package com.koo.aoi.ai_problem.dto;
 
-import com.koo.aoi.domain.AIProblem;
+import com.koo.aoi.ai_problem.domain.AIProblem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

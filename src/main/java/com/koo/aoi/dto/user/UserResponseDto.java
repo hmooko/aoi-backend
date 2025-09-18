@@ -1,6 +1,6 @@
 package com.koo.aoi.dto.user;
 
-import com.koo.aoi.domain.User;
+import com.koo.aoi.user.domain.User;
 import lombok.Getter;
 
 @Getter

@@ -1,5 +1,5 @@
 
-package com.koo.aoi.domain;
+package com.koo.aoi.user.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

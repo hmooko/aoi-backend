@@ -1,6 +1,6 @@
-package com.koo.aoi.repository;
+package com.koo.aoi.user.repository;
 
-import com.koo.aoi.domain.User;
+import com.koo.aoi.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

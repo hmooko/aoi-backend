@@ -1,4 +1,4 @@
-package com.koo.aoi.dto.gemini;
+package com.koo.aoi.gemini.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

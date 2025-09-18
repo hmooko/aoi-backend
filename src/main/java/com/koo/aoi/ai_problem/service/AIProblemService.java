@@ -1,17 +1,17 @@
-package com.koo.aoi.service.createaiproblems;
+package com.koo.aoi.ai_problem.service;
 
-import com.koo.aoi.client.GeminiApiClient;
-import com.koo.aoi.domain.AIProblem;
-import com.koo.aoi.dto.gemini.GeminiRequest;
-import com.koo.aoi.dto.problem.AIProblemCreateRequestDto;
-import com.koo.aoi.dto.problem.AIProblemResponseDto;
-import com.koo.aoi.repository.AIProblemRepository;
-import com.koo.aoi.service.createaiproblems.strategy.FillReadingProblemStrategy;
-import com.koo.aoi.service.createaiproblems.strategy.FindKanjiProblemStrategy;
-import com.koo.aoi.service.createaiproblems.strategy.FindReadingProblemStrategy;
-import com.koo.aoi.service.createaiproblems.strategy.ProblemCreationStrategy;
-import com.koo.aoi.domain.AIProblem.ProblemType;
-import com.koo.aoi.dto.gemini.GeminiResponse;
+import com.koo.aoi.gemini.client.GeminiApiClient;
+import com.koo.aoi.ai_problem.domain.AIProblem;
+import com.koo.aoi.gemini.dto.GeminiRequest;
+import com.koo.aoi.ai_problem.dto.AIProblemCreateRequestDto;
+import com.koo.aoi.ai_problem.dto.AIProblemResponseDto;
+import com.koo.aoi.ai_problem.repository.AIProblemRepository;
+import com.koo.aoi.ai_problem.service.strategy.FillReadingProblemStrategy;
+import com.koo.aoi.ai_problem.service.strategy.FindKanjiProblemStrategy;
+import com.koo.aoi.ai_problem.service.strategy.FindReadingProblemStrategy;
+import com.koo.aoi.ai_problem.service.strategy.ProblemCreationStrategy;
+import com.koo.aoi.ai_problem.domain.AIProblem.ProblemType;
+import com.koo.aoi.gemini.dto.GeminiResponse;
 import org.springframework.stereotype.Service;
  
 
@@ -28,14 +28,12 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 @Service
 public class AIProblemService {
     private final GeminiApiClient geminiApiClient;
-    private final AIProblemRepository aiProblemRepository;
     // EnumMap is a highly efficient Map implementation for use with enum keys.
     private final Map<ProblemType, ProblemCreationStrategy> strategyMap;
 
     // Spring will automatically inject all beans that implement ProblemCreationStrategy into the list.
     public AIProblemService(GeminiApiClient geminiApiClient, AIProblemRepository aiProblemRepository) {
         this.geminiApiClient = geminiApiClient;
-        this.aiProblemRepository = aiProblemRepository;
         this.strategyMap = new EnumMap<>(ProblemType.class);
 
         List<ProblemCreationStrategy> strategies = List.of(
@@ -90,11 +88,9 @@ public class AIProblemService {
                 problem.setCreateAt(now);
                 problem.setUpdateAt(now);
                 return problem;
-            }).collect(Collectors.toList());
+            }).toList();
 
-            List<AIProblem> savedProblems = aiProblemRepository.saveAll(problems);
-
-            return savedProblems.stream()
+            return problems.stream()
                     .map(AIProblemResponseDto::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {

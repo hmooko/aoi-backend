@@ -2,8 +2,9 @@ package com.koo.aoi.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.koo.aoi.dto.gemini.GeminiRequest;
-import com.koo.aoi.dto.gemini.GeminiResponse;
+import com.koo.aoi.gemini.dto.GeminiRequest;
+import com.koo.aoi.gemini.dto.GeminiResponse;
+import com.koo.aoi.gemini.client.GeminiApiClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
