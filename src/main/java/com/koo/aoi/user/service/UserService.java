@@ -1,64 +1,47 @@
 package com.koo.aoi.user.service;
 
 import com.koo.aoi.user.domain.User;
-import com.koo.aoi.dto.user.UserResponseDto;
-import com.koo.aoi.dto.user.UserSignUpRequestDto;
+import com.koo.aoi.user.dto.UserSignInRequest;
+import com.koo.aoi.user.dto.UserSignUpRequest;
 import com.koo.aoi.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 @Service
-@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserResponseDto signUp(UserSignUpRequestDto request) {
-        validateDuplicateUsername(request.getUsername());
+    public User register(UserSignUpRequest request) {
+        userRepository.findByUid(request.getUid()).ifPresent(user -> {
+            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+        });
 
         User user = User.builder()
-                .username(request.getUsername())
-                .email(request.getEmail())
-                .password(request.getPassword())
+                .uid(request.getUid())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .nickname(request.getNickname())
                 .role(User.Role.USER)
+                .timeZone(User.TimeZone.KOREA)
                 .build();
 
-        User saved = userRepository.save(user);
-        return new UserResponseDto(saved);
+        return userRepository.save(user);
     }
 
-    public UserResponseDto getById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: id=" + id));
-        return new UserResponseDto(user);
-    }
+    @Transactional(readOnly = true)
+    public User authenticate(UserSignInRequest request) {
+        User user = userRepository.findByUid(request.getUid())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-    public UserResponseDto getByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: username=" + username));
-        return new UserResponseDto(user);
-    }
-
-    public List<UserResponseDto> listAll() {
-        return userRepository.findAll().stream()
-                .map(UserResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-    private void validateDuplicateUsername(String username) {
-        Optional<User> existing = userRepository.findByUsername(username);
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException("Username already exists: " + username);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+
+        return user;
     }
 }
-

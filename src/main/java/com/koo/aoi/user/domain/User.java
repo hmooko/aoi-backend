@@ -22,17 +22,21 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String nickname;
 
     @Column(nullable = false)
     private String password;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private String uid;
 
-    @Enumerated(EnumType.STRING) // Enum의 이름을 DB에 저장 (EnumType.ORDINAL은 순서를 저장하므로 비권장)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TimeZone timeZone;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -53,5 +57,9 @@ public class User {
     // 사용자 역할 Enum
     public enum Role {
         USER, ADMIN
+    }
+
+    public enum TimeZone {
+        KOREA
     }
 }
