@@ -11,15 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "feature")
 public class Feature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = false)
-    private String code;
-
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    @Enumerated(EnumType.STRING)
+    private FeatureCode code;
 }

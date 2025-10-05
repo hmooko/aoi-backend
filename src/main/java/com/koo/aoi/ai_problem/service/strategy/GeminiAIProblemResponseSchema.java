@@ -30,10 +30,10 @@ public class GeminiAIProblemResponseSchema {
 
     public GeminiRequest.GeminiResponseSchema generateSchema() {
         return GeminiRequest.GeminiResponseSchema.builder()
-                .type("ARRAY")
+                .type("array")
                 .description("생성된 한자 퀴즈 문제의 목록입니다.")
                 .items(GeminiRequest.GeminiResponseSchema.builder()
-                        .type("OBJECT")
+                        .type("object")
                         .description("한자 퀴즈 문제 하나를 나타내는 구조입니다.")
                         .properties(Map.of(
                                 "targetKanji", GeminiRequest.GeminiResponseSchema.builder()
@@ -45,12 +45,16 @@ public class GeminiAIProblemResponseSchema {
                                         .description(targetWordDescription)
                                         .build(),
                                 "sentence", GeminiRequest.GeminiResponseSchema.builder()
-                                        .type("String")
+                                        .type("string")
                                         .description(sentenceDescription)
                                         .build(),
                                 "options", GeminiRequest.GeminiResponseSchema.builder()
-                                        .type("String")
+                                        .type("array")
                                         .description(optionsDescription)
+                                        .items(GeminiRequest.GeminiResponseSchema.builder()
+                                                .type("string")
+                                                .description("선택지 문자열")
+                                                .build())
                                         .build(),
                                 "answer", GeminiRequest.GeminiResponseSchema.builder()
                                         .type("string")

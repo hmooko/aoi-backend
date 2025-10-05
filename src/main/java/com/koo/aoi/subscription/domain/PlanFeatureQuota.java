@@ -6,21 +6,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Entity
 @Getter @Setter
+@Table(name = "plan_feature_quota")
 public class PlanFeatureQuota {
     @EmbeddedId
     private PlanFeatureQuotaId id;
 
-    @MapsId("plan_id")
+    @MapsId("planId")
     @ManyToOne(fetch = FetchType.LAZY) private Plan plan;
 
-    @MapsId("feature_id")
+    @MapsId("featureId")
     @ManyToOne(fetch = FetchType.LAZY) private Feature feature;
 
     @Column(nullable=false)
     private int quota;
 }
-

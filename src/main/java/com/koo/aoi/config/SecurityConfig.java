@@ -1,4 +1,4 @@
-package com.koo.aoi.auth.config;
+package com.koo.aoi.config;
 
 import com.koo.aoi.auth.jwt.JwtAuthenticationEntryPoint;
 import com.koo.aoi.auth.jwt.JwtAuthenticationFilter;
@@ -16,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+
+
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
@@ -24,6 +27,22 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
+    private static final String[] SWAGGER_URIS = {
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/v3/api-docs/swagger-config",
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(SWAGGER_URIS);
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -31,12 +50,9 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(handler -> handler.authenticationEntryPoint(authenticationEntryPoint))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/api/v1/auth/**",
-                            "/v3/api-docs/**",
-                            "/swagger-ui.html",
-                            "/swagger-ui/**"
-                    ).permitAll()
+                    .requestMatchers(SWAGGER_URIS).permitAll()
+                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/hello").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

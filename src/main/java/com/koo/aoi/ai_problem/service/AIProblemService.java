@@ -5,13 +5,15 @@ import com.koo.aoi.ai_problem.domain.AIProblem;
 import com.koo.aoi.gemini.dto.GeminiRequest;
 import com.koo.aoi.ai_problem.dto.AIProblemCreateRequestDto;
 import com.koo.aoi.ai_problem.dto.AIProblemResponseDto;
-import com.koo.aoi.ai_problem.repository.AIProblemRepository;
 import com.koo.aoi.ai_problem.service.strategy.FillReadingProblemStrategy;
 import com.koo.aoi.ai_problem.service.strategy.FindKanjiProblemStrategy;
 import com.koo.aoi.ai_problem.service.strategy.FindReadingProblemStrategy;
 import com.koo.aoi.ai_problem.service.strategy.ProblemCreationStrategy;
 import com.koo.aoi.ai_problem.domain.AIProblem.ProblemType;
 import com.koo.aoi.gemini.dto.GeminiResponse;
+import com.koo.aoi.subscription.service.UsageCounterService;
+import com.koo.aoi.user.domain.User;
+import com.koo.aoi.user.service.UserService;
 import org.springframework.stereotype.Service;
  
 
@@ -27,13 +29,24 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 
 @Service
 public class AIProblemService {
+
+
     private final GeminiApiClient geminiApiClient;
-    // EnumMap is a highly efficient Map implementation for use with enum keys.
+
+    private final UsageCounterService usageCounterService;
+    private final UserService userService;
+
     private final Map<ProblemType, ProblemCreationStrategy> strategyMap;
 
-    // Spring will automatically inject all beans that implement ProblemCreationStrategy into the list.
-    public AIProblemService(GeminiApiClient geminiApiClient, AIProblemRepository aiProblemRepository) {
+    public AIProblemService(
+            GeminiApiClient geminiApiClient,
+            UsageCounterService usageCounterService,
+            UserService userService
+    ) {
         this.geminiApiClient = geminiApiClient;
+        this.usageCounterService = usageCounterService;
+        this.userService = userService;
+
         this.strategyMap = new EnumMap<>(ProblemType.class);
 
         List<ProblemCreationStrategy> strategies = List.of(
@@ -48,6 +61,12 @@ public class AIProblemService {
 
     public List<AIProblemResponseDto> createAIProblems(AIProblemCreateRequestDto requestDto) {
 
+        User currentUser = userService.getCurrentUser();
+        if (!usageCounterService.isAiProblemUsageAvailable(currentUser)) {
+            // TODO: 사용량 한도 초과 에러 처리 클래스 만들어야 함
+            throw new IllegalStateException("사용량 한도 초과");
+        }
+
         ProblemType type = requestDto.getProblemType();
 
         ProblemCreationStrategy strategy = strategyMap.get(type);
@@ -59,6 +78,8 @@ public class AIProblemService {
         GeminiRequest geminiRequest = strategy.createRequest(requestDto);
 
         GeminiResponse response = geminiApiClient.generateContent(geminiRequest);
+
+        System.out.println(response);
 
         if (response == null || response.candidates() == null || response.candidates().isEmpty()) {
             throw new IllegalStateException("Empty response from Gemini API");
@@ -76,7 +97,6 @@ public class AIProblemService {
             ObjectMapper mapper = new ObjectMapper();
             List<ProblemPayload> payloads = mapper.readValue(json, new TypeReference<List<ProblemPayload>>() {});
 
-            LocalDateTime now = LocalDateTime.now();
             List<AIProblem> problems = payloads.stream().map(p -> {
                 AIProblem problem = new AIProblem();
                 problem.setProblemType(type);
@@ -85,8 +105,6 @@ public class AIProblemService {
                 problem.setOptions(p.options);
                 problem.setAnswer(p.answer);
                 problem.setTargetWord(p.targetWord);
-                problem.setCreateAt(now);
-                problem.setUpdateAt(now);
                 return problem;
             }).toList();
 

@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "plan")
 public class Plan {
 
     @Id
@@ -18,8 +19,6 @@ public class Plan {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String code;
-
-    @Column(nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private PlanCode code;
 }

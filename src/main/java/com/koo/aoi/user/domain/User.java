@@ -1,6 +1,7 @@
 
 package com.koo.aoi.user.domain;
 
+import com.koo.aoi.subscription.domain.Plan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,15 +25,19 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
-    private String password;
-
     @Column(unique = true, nullable = false)
     private String uid;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Plan plan;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -54,12 +59,15 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // 사용자 역할 Enum
-    public enum Role {
-        USER, ADMIN
+    public enum TimeZone {
+        ASIA_SEOUL("Asia/Seoul");
+
+        private final String timeZone;
+        TimeZone(String timeZone) { this.timeZone = timeZone; }
+        public String getTimeZoneId() { return timeZone; }
     }
 
-    public enum TimeZone {
-        KOREA
+    public enum Role {
+        USER, ADMIN
     }
 }

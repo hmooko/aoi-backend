@@ -1,4 +1,4 @@
-package com.koo.aoi.user.dto;
+package com.koo.aoi.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

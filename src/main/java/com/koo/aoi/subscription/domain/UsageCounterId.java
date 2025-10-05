@@ -1,4 +1,4 @@
-package com.koo.aoi.quota.domain;
+package com.koo.aoi.subscription.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
