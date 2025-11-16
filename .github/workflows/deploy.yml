@@ -49,8 +49,14 @@ jobs:
           key: ${{ secrets.OCI_SSH_KEY }}
           port: 22
           script: |
-            # 이전에 systemd 서비스로 등록한 이름 (my-app.service)을 사용합니다.
+            JAR_FILE=$(find ~/ -name "*.jar" | head -n 1)
+            if [ -z "$JAR_FILE" ]; then
+              echo "Error: No .jar file found in home directory."
+              exit 1
+            fi
+            echo "Found new JAR file: $JAR_FILE"
+            sudo systemctl stop my-app.service
+            sudo mv "$JAR_FILE" /home/ubuntu/app.jar
+            echo "New JAR file deployed."
             sudo systemctl restart my-app.service
-            
-            # (선택) Nginx도 재시작해야 하는 경우
-            # sudo systemctl restart nginx
+            echo "Service restarted successfully."
