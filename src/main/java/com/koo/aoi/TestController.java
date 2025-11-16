@@ -9,7 +9,7 @@ import java.io.IOException;
 @RestController
 public class TestController {
 
-    @GetMapping("/test")
+    @GetMapping("/api/v1/test")
     public String test(HttpServletResponse response) throws IOException {
         return "test succeed";
     }
