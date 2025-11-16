@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 "/oauth2/**", "/login/oauth2/**",
                                 // Frontend login route (if any) and well-known probes
                                 "/login", "/.well-known/**",
-                                "/test"
+                                "/api/v1/test"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
