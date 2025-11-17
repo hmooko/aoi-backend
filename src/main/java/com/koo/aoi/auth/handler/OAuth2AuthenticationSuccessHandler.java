@@ -1,10 +1,13 @@
 package com.koo.aoi.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.koo.aoi.auth.apiPayload.code.AuthSuccessCode;
 import com.koo.aoi.auth.domain.RefreshToken;
 import com.koo.aoi.auth.jwt.JwtTokenProvider;
 import com.koo.aoi.auth.repository.RefreshTokenRepository;
 import com.koo.aoi.auth.util.CookieUtil;
+import com.koo.aoi.global.apiPayload.AoiApiResponse;
+import com.koo.aoi.global.apiPayload.code.GeneralSuccessCode;
 import com.koo.aoi.user.domain.AoiUser;
 import com.koo.aoi.user.domain.Provider;
 import com.koo.aoi.user.service.UserService;
@@ -72,6 +75,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 "accessToken", accessToken,
                 "refreshToken", refreshTokenValue
         );
-        objectMapper.writeValue(response.getWriter(), payload);
+
+        AoiApiResponse<Map<String, String>> apiResponse = AoiApiResponse.onSuccess(AuthSuccessCode.LOGIN_SUCCESS, payload);
+        objectMapper.writeValue(response.getWriter(), apiResponse);
     }
 }

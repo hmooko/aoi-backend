@@ -1,5 +1,7 @@
 package com.koo.aoi.auth.handler;
 
+import com.koo.aoi.auth.apiPayload.code.AuthErrorCode;
+import com.koo.aoi.auth.apiPayload.exception.AuthException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +19,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.error("Unauthenticated request to {}: {}", request.getRequestURI(), authException.getMessage());
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        throw new AuthException(AuthErrorCode.UNAUTHORIZED);
     }
 }
